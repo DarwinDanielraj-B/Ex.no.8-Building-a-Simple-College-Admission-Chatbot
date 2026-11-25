@@ -1,60 +1,616 @@
-# Ex.no.8-Building-a-Simple-College-Admission-Chatbot
-## Aim :
- To design, implement and test a simple rule-based chatbot in Python that answers frequently asked questions related to college admissions, such as courses offered, eligibility criteria, fees, application process, required documents, important dates, hostel facilities and contact details.
-### Introduction
-A chatbot is a software application that simulates a conversation with a human user, typically through text. A rule-based (or pattern-matching) chatbot works by comparing the user's message against a predefined set of keywords or patterns and returning a suitable pre-written response. It does not require large training datasets or heavy computation, which makes it an easy and beginner-friendly starting point for understanding how conversational AI systems are built. In this experiment, a College Admission Chatbot is developed to act as a virtual help-desk assistant that instantly answers common queries asked by prospective students.
-### Procedure
+
+# EX-NO-8: Building a Simple College Admission Chatbot
+
+## AIM
+
+To design, implement, and test a simple rule-based chatbot in Python that answers frequently asked questions related to college admissions, such as courses offered, eligibility criteria, fees, application process, required documents, important dates, hostel facilities, and contact details.
+
+---
+
+## INTRODUCTION
+
+A chatbot is a software application that simulates a conversation with a human user, typically through text.
+
+A rule-based chatbot works by comparing the user's message against a predefined set of keywords or patterns and returning a suitable pre-written response.
+
+It does not require large training datasets or heavy computation, making it a beginner-friendly approach to understanding conversational AI systems.
+
+In this experiment, a **College Admission Chatbot** is developed to act as a virtual help-desk assistant that instantly answers common questions asked by prospective students.
+
+### KEY FEATURES
+
+- Answers frequently asked admission-related questions.
+- Identifies user intent using predefined keywords and patterns.
+- Provides multiple responses for different queries.
+- Uses random response selection to avoid repetitive replies.
+- Supports interactive conversations through the Python console.
+- Handles unknown questions using a fallback response.
+- Terminates the conversation when the user types `bye`, `exit`, or `quit`.
+
+---
+
+## WORKFLOW DIAGRAM
+
+```mermaid
+flowchart TD
+    A([Start]) --> B[Import Required Libraries]
+    B --> C[Create Knowledge Base]
+    C --> D[Define Intent Matching Function]
+    D --> E[Define Response Function]
+    E --> F[Build Interactive Chat Loop]
+    F --> G[Receive User Input]
+    G --> H[Match User Intent]
+    H --> I{Intent Found?}
+    I -- Yes --> J[Generate Suitable Response]
+    I -- No --> K[Generate Fallback Response]
+    J --> L[Display Chatbot Response]
+    K --> L
+    L --> M{Goodbye Intent?}
+    M -- No --> G
+    M -- Yes --> N([End])
+```
+
+---
+
+## PROCEDURE
+
 ### Step 1: Import Required Libraries
-●	re – Python's regular expression module, used to search for keyword patterns inside the user's message.
-●	random – used to randomly pick one response when more than one reply is available for the same intent, so the chatbot does not sound repetitive.
-<img width="605" height="37" alt="image" src="https://github.com/user-attachments/assets/5d19fe62-e644-4676-805b-2fe23826e1da" />
+
+Two Python libraries are imported:
+
+- **re:** Python's regular expression module, used to search for keyword patterns inside the user's message.
+- **random:** Used to randomly select one response when multiple replies are available for the same intent.
+
+**Code:**
+
+```python
+import re
+import random
+```
+
+**Output:**
+
+```text
+Required libraries imported successfully.
+```
+
+**Screenshot:**
+
+![Import Libraries](images/step1-import-libraries.png)
+
+---
+
 ### Step 2: Design the Knowledge Base (Intents and Responses)
-●	The knowledge base is stored as a Python dictionary, where every key is an intent (topic) such as courses, eligibility, fees or hostel.
-●	Each intent stores a list of patterns (keywords/phrases likely to appear in a user's question) and a list of possible responses.
-●	Organising the data this way makes the chatbot easy to extend — a new admission topic can be added simply by adding one more entry to the dictionary.
-<img width="642" height="222" alt="image" src="https://github.com/user-attachments/assets/146afc71-fa16-4c84-a959-c91bbc2842eb" />
-<img width="618" height="359" alt="image" src="https://github.com/user-attachments/assets/6b976de7-7dce-4418-a526-d25b31c66e79" />
-Knowledge Base Summary
-The table below summarises the complete knowledge base used by the chatbot:
-<img width="669" height="403" alt="image" src="https://github.com/user-attachments/assets/991481a9-e6a3-4ce8-a3d0-2f07c4c7adf2" />
+
+The knowledge base is stored as a Python dictionary.
+
+Each intent contains:
+
+- **Patterns:** Keywords or phrases likely to appear in a user's question.
+- **Responses:** Predefined answers returned by the chatbot.
+
+The knowledge base contains the following admission-related topics:
+
+1. Greeting
+2. Courses
+3. Eligibility
+4. Fees
+5. Application Process
+6. Documents
+7. Important Dates
+8. Hostel Facilities
+9. Contact Details
+10. Goodbye
+
+**Code:**
+
+```python
+knowledge_base = {
+    "greeting": {
+        "patterns": [r"\bhello\b", r"\bhi\b", r"\bhey\b"],
+        "responses": [
+            "Hello! Welcome to the College Admission Help Desk.",
+            "Hi! How can I help you with college admissions?"
+        ]
+    },
+
+    "courses": {
+        "patterns": [r"\bcourses?\b", r"\bprograms?\b", r"\bbranches\b"],
+        "responses": [
+            "We offer courses in Engineering, Science, Arts, and Management.",
+            "Our college provides undergraduate and postgraduate programs."
+        ]
+    },
+
+    "eligibility": {
+        "patterns": [r"\beligibility\b", r"\bqualification\b", r"\bmarks\b"],
+        "responses": [
+            "Eligibility depends on the selected course and admission guidelines.",
+            "Students must satisfy the academic requirements for their chosen program."
+        ]
+    },
+
+    "fees": {
+        "patterns": [r"\bfees?\b", r"\btuition\b", r"\bcost\b"],
+        "responses": [
+            "The fee structure depends on the course and admission category.",
+            "Please contact the admission office for the latest fee details."
+        ]
+    },
+
+    "application": {
+        "patterns": [r"\bapplication\b", r"\bapply\b", r"\badmission process\b"],
+        "responses": [
+            "You can apply through the college admission portal or admission office.",
+            "Complete the application form and submit the required details."
+        ]
+    },
+
+    "documents": {
+        "patterns": [r"\bdocuments?\b", r"\bcertificates?\b", r"\bproof\b"],
+        "responses": [
+            "Required documents may include mark sheets, transfer certificate, ID proof, and photographs.",
+            "Please prepare your academic certificates and identity documents."
+        ]
+    },
+
+    "dates": {
+        "patterns": [r"\bdates?\b", r"\bdeadline\b", r"\blast date\b"],
+        "responses": [
+            "Admission dates and deadlines are announced through the official college website.",
+            "Please check the admission portal for the latest important dates."
+        ]
+    },
+
+    "hostel": {
+        "patterns": [r"\bhostel\b", r"\baccommodation\b", r"\blodging\b"],
+        "responses": [
+            "Hostel facilities are available for eligible students. Contact the hostel office for details.",
+            "Please contact the college administration for hostel availability and fee information."
+        ]
+    },
+
+    "contact": {
+        "patterns": [r"\bcontact\b", r"\bphone\b", r"\bemail\b", r"\baddress\b"],
+        "responses": [
+            "Please visit the official college website for admission office contact details.",
+            "You can contact the college admission office for further assistance."
+        ]
+    },
+
+    "goodbye": {
+        "patterns": [r"\bbye\b", r"\bexit\b", r"\bquit\b"],
+        "responses": [
+            "Thank you for contacting the College Admission Help Desk. Goodbye!",
+            "Goodbye! Best wishes for your admission."
+        ]
+    }
+}
+```
+
+### Knowledge Base Summary
+
+| Intent | Example Keywords | Purpose |
+|---|---|---|
+| Greeting | Hello, Hi, Hey | Welcome the user |
+| Courses | Courses, Programs, Branches | Course information |
+| Eligibility | Eligibility, Marks, Qualification | Admission requirements |
+| Fees | Fees, Tuition, Cost | Fee-related queries |
+| Application | Apply, Application | Application procedure |
+| Documents | Documents, Certificates | Required documents |
+| Dates | Deadline, Dates, Last date | Admission schedule |
+| Hostel | Hostel, Accommodation | Hostel information |
+| Contact | Phone, Email, Address | Contact information |
+| Goodbye | Bye, Exit, Quit | End the conversation |
+
+**Screenshot:**
+
+![Knowledge Base](images/step2-knowledge-base.png)
+
+---
+
 ### Step 3: Function to Match User Input to an Intent
-●	Converts the user's sentence to lower case so that matching is not case-sensitive.
-●	re.search() scans the message for each pattern of every intent; the first intent whose pattern is found is returned.
-●	If no pattern matches any intent, the function returns None so the fallback response can be used.
-<img width="632" height="115" alt="image" src="https://github.com/user-attachments/assets/b4e8db5f-7e9c-4e48-9aeb-82d4c9e43097" />
+
+The `match_intent()` function identifies the intent behind the user's message.
+
+- Converts the user's sentence to lowercase so matching is not case-sensitive.
+- Uses `re.search()` to scan the message for patterns belonging to each intent.
+- Returns the first matching intent.
+- Returns `None` if no pattern matches.
+
+**Code:**
+
+```python
+def match_intent(user_input):
+    user_input = user_input.lower()
+
+    for intent, data in knowledge_base.items():
+        for pattern in data["patterns"]:
+            if re.search(pattern, user_input):
+                return intent
+
+    return None
+```
+
+**Screenshot:**
+
+![Intent Matching](images/step3-intent-matching.png)
+
+---
+
 ### Step 4: Define the Chatbot Response Function
-●	Calls match_intent() to identify what the user is asking about.
-●	random.choice() picks one response from the matched intent's response list.
-●	Returns a fallback message when the intent could not be identified, instead of leaving the user without a reply.
-<img width="623" height="95" alt="image" src="https://github.com/user-attachments/assets/ab6895ac-bba4-4e66-9c51-cacf8d828286" />
+
+The `get_response()` function generates an appropriate response.
+
+- Calls `match_intent()` to identify the user's intent.
+- Uses `random.choice()` to select a response from the matched intent.
+- Returns a fallback response when the intent cannot be identified.
+
+**Code:**
+
+```python
+def get_response(user_input):
+    intent = match_intent(user_input)
+
+    if intent:
+        return random.choice(
+            knowledge_base[intent]["responses"]
+        )
+
+    return "Sorry, I didn't understand that. Please ask about courses, fees, eligibility, or admissions."
+```
+
+**Screenshot:**
+
+![Chatbot Response Function](images/step4-response-function.png)
+
+---
+
 ### Step 5: Build the Interactive Conversation Loop
-●	input() continuously reads the user's message from the console.
-●	get_response() generates the reply for every message typed by the user.
-●	The loop ends automatically once the matched intent is “goodbye” (e.g. the user types bye / exit / quit).
-<img width="632" height="126" alt="image" src="https://github.com/user-attachments/assets/ae562d77-2461-4bed-b4c1-461b1cea5728" />
+
+The `chat()` function creates an interactive conversation between the user and the chatbot.
+
+- `input()` continuously reads the user's message.
+- `get_response()` generates a reply for every message.
+- The loop ends when the user enters `bye`, `exit`, or `quit`.
+
+**Code:**
+
+```python
+def chat():
+    print("College Admission Chatbot")
+    print("Type 'bye' to end the conversation.")
+
+    while True:
+        user_input = input("You: ")
+        response = get_response(user_input)
+
+        print("Bot:", response)
+
+        if match_intent(user_input) == "goodbye":
+            break
+```
+
+**Screenshot:**
+
+![Interactive Chat Loop](images/step5-chat-loop.png)
+
+---
+
 ### Step 6: Test the Chatbot with Sample Queries
-●	A list of realistic sample questions is used to automatically test every intent in the knowledge base.
-●	Each query and the chatbot's corresponding reply are printed, which makes it easy to verify that every category of question is answered correctly.
-<img width="622" height="113" alt="image" src="https://github.com/user-attachments/assets/4fdb6b4b-c684-4033-94e1-0d51fa19e99b" />
-<img width="583" height="251" alt="image" src="https://github.com/user-attachments/assets/2ba37096-9575-4164-b4c3-ebca74ca9aab" />
-### Step 7: Run the Chatbot
-The complete script is executed in Python. Since input() cannot be used for automated testing, the sample_queries list from Step 6 is run first to validate every intent; the same get_response() function also powers the live chat() loop for real-time conversation with a user. The output produced on running the program is shown below.
-Output
-### Sample Conversation Output (Part 1)
-●	The chatbot correctly greets the user and identifies the courses, eligibility, fees, application process and documents intents from the keywords present in each question.
-<img width="646" height="470" alt="image" src="https://github.com/user-attachments/assets/016e1f31-dd01-4348-8815-70b3577b1391" />
-### Sample Conversation Output (Part 2)
-●	The remaining queries about dates, hostel facility and contact details are correctly matched to their respective intents.
-●	The conversation ends gracefully with a goodbye message once the user types “Bye”, terminating the chat loop.
-<img width="660" height="380" alt="image" src="https://github.com/user-attachments/assets/698ac90d-7962-406c-b381-03d16bedfb3b" />
-## Conclusion
-Thus, a simple rule-based College Admission Chatbot was successfully designed, implemented and tested using Python. The chatbot uses a keyword/pattern-based knowledge base to identify the intent behind a user's question and responds with an appropriate, pre-defined answer covering courses, eligibility, fees, application process, documents, dates, hostel and contact information. The experiment demonstrates the fundamental building blocks — knowledge base design, intent matching and response generation — on which more advanced NLP-based and AI-based chatbots are built.
+
+A list of sample questions is created to test the different intents in the knowledge base.
+
+Each query is passed to the `get_response()` function, and the chatbot's reply is displayed.
+
+**Code:**
+
+```python
+sample_queries = [
+    "Hello",
+    "What courses are available?",
+    "What is the eligibility criteria?",
+    "Tell me about the fees",
+    "How can I apply for admission?",
+    "What documents are required?",
+    "What is the last date for admission?",
+    "Do you have hostel facilities?",
+    "How can I contact the college?",
+    "Bye"
+]
+
+print("CHATBOT TESTING")
+print("-" * 40)
+
+for query in sample_queries:
+    print("You:", query)
+    print("Bot:", get_response(query))
+    print()
+```
+
+**Screenshot:**
+
+![Sample Queries](images/step6-sample-testing.png)
+
+---
+
+### Step 7: Run the Complete Chatbot Program
+
+The complete Python script is executed.
+
+The sample queries are tested first to verify the different intents. The same `get_response()` function is also used in the live `chat()` loop for real-time conversation.
+
+**Complete Python Program:**
+
+```python
+import re
+import random
+
+# Step 1 and 2: Knowledge Base
+knowledge_base = {
+    "greeting": {
+        "patterns": [r"\bhello\b", r"\bhi\b", r"\bhey\b"],
+        "responses": [
+            "Hello! Welcome to the College Admission Help Desk.",
+            "Hi! How can I help you with college admissions?"
+        ]
+    },
+
+    "courses": {
+        "patterns": [r"\bcourses?\b", r"\bprograms?\b", r"\bbranches\b"],
+        "responses": [
+            "We offer courses in Engineering, Science, Arts, and Management.",
+            "Our college provides undergraduate and postgraduate programs."
+        ]
+    },
+
+    "eligibility": {
+        "patterns": [r"\beligibility\b", r"\bqualification\b", r"\bmarks\b"],
+        "responses": [
+            "Eligibility depends on the selected course and admission guidelines.",
+            "Students must satisfy the academic requirements for their chosen program."
+        ]
+    },
+
+    "fees": {
+        "patterns": [r"\bfees?\b", r"\btuition\b", r"\bcost\b"],
+        "responses": [
+            "The fee structure depends on the course and admission category.",
+            "Please contact the admission office for the latest fee details."
+        ]
+    },
+
+    "application": {
+        "patterns": [r"\bapplication\b", r"\bapply\b", r"\badmission process\b"],
+        "responses": [
+            "You can apply through the college admission portal or admission office.",
+            "Complete the application form and submit the required details."
+        ]
+    },
+
+    "documents": {
+        "patterns": [r"\bdocuments?\b", r"\bcertificates?\b", r"\bproof\b"],
+        "responses": [
+            "Required documents may include mark sheets, transfer certificate, ID proof, and photographs.",
+            "Please prepare your academic certificates and identity documents."
+        ]
+    },
+
+    "dates": {
+        "patterns": [r"\bdates?\b", r"\bdeadline\b", r"\blast date\b"],
+        "responses": [
+            "Admission dates and deadlines are announced through the official college website.",
+            "Please check the admission portal for the latest important dates."
+        ]
+    },
+
+    "hostel": {
+        "patterns": [r"\bhostel\b", r"\baccommodation\b", r"\blodging\b"],
+        "responses": [
+            "Hostel facilities are available for eligible students. Contact the hostel office for details.",
+            "Please contact the college administration for hostel availability and fee information."
+        ]
+    },
+
+    "contact": {
+        "patterns": [r"\bcontact\b", r"\bphone\b", r"\bemail\b", r"\baddress\b"],
+        "responses": [
+            "Please visit the official college website for admission office contact details.",
+            "You can contact the college admission office for further assistance."
+        ]
+    },
+
+    "goodbye": {
+        "patterns": [r"\bbye\b", r"\bexit\b", r"\bquit\b"],
+        "responses": [
+            "Thank you for contacting the College Admission Help Desk. Goodbye!",
+            "Goodbye! Best wishes for your admission."
+        ]
+    }
+}
 
 
+# Step 3: Match User Input to Intent
+def match_intent(user_input):
+    user_input = user_input.lower()
+
+    for intent, data in knowledge_base.items():
+        for pattern in data["patterns"]:
+            if re.search(pattern, user_input):
+                return intent
+
+    return None
 
 
+# Step 4: Generate Chatbot Response
+def get_response(user_input):
+    intent = match_intent(user_input)
+
+    if intent:
+        return random.choice(
+            knowledge_base[intent]["responses"]
+        )
+
+    return "Sorry, I didn't understand that. Please ask about courses, fees, eligibility, or admissions."
 
 
+# Step 5: Interactive Chat Function
+def chat():
+    print("College Admission Chatbot")
+    print("Type 'bye' to end the conversation.")
+
+    while True:
+        user_input = input("You: ")
+        response = get_response(user_input)
+
+        print("Bot:", response)
+
+        if match_intent(user_input) == "goodbye":
+            break
 
 
+# Step 6: Test the Chatbot
+sample_queries = [
+    "Hello",
+    "What courses are available?",
+    "What is the eligibility criteria?",
+    "Tell me about the fees",
+    "How can I apply for admission?",
+    "What documents are required?",
+    "What is the last date for admission?",
+    "Do you have hostel facilities?",
+    "How can I contact the college?",
+    "Bye"
+]
 
+print("CHATBOT TESTING")
+print("-" * 40)
+
+for query in sample_queries:
+    print("You:", query)
+    print("Bot:", get_response(query))
+    print()
+
+
+# Step 7: Start Live Chat
+chat()
+```
+
+---
+
+## OUTPUT
+
+### 1. Sample Conversation Output
+
+The chatbot successfully identifies the greeting, courses, eligibility, fees, application, and documents intents.
+
+**Expected output format:**
+
+```text
+CHATBOT TESTING
+----------------------------------------
+You: Hello
+Bot: Hello! Welcome to the College Admission Help Desk.
+
+You: What courses are available?
+Bot: We offer courses in Engineering, Science, Arts, and Management.
+
+You: What is the eligibility criteria?
+Bot: Eligibility depends on the selected course and admission guidelines.
+
+You: Tell me about the fees
+Bot: The fee structure depends on the course and admission category.
+
+You: How can I apply for admission?
+Bot: You can apply through the college admission portal or admission office.
+```
+
+### 2. Remaining Conversation Output
+
+The remaining queries about important dates, hostel facilities, and contact details are matched to their respective intents.
+
+```text
+You: What documents are required?
+Bot: Required documents may include mark sheets, transfer certificate, ID proof, and photographs.
+
+You: What is the last date for admission?
+Bot: Admission dates and deadlines are announced through the official college website.
+
+You: Do you have hostel facilities?
+Bot: Hostel facilities are available for eligible students. Contact the hostel office for details.
+
+You: How can I contact the college?
+Bot: Please visit the official college website for admission office contact details.
+
+You: Bye
+Bot: Thank you for contacting the College Admission Help Desk. Goodbye!
+```
+
+**Note:** Since the chatbot uses `random.choice()`, the exact response may vary between executions.
+
+### 3. Live Chat Screenshot
+
+Add your actual Python console screenshot here.
+
+![Live Chat Output](images/live-chat-output.png)
+
+---
+
+## RESULT
+
+A simple rule-based College Admission Chatbot was successfully designed, implemented, and tested using Python.
+
+The chatbot identifies user intent through predefined keywords and regular expression patterns and generates suitable responses using a predefined knowledge base.
+
+It successfully handles common admission-related queries, including courses, eligibility, fees, application procedures, required documents, important dates, hostel facilities, and contact details.
+
+---
+
+## CONCLUSION
+
+Thus, a simple rule-based College Admission Chatbot was successfully developed using Python.
+
+The experiment demonstrated the fundamental concepts of chatbot development, including knowledge base design, intent matching, pattern recognition, and response generation.
+
+The chatbot provides a basic virtual help-desk system for answering frequently asked college admission questions. This experiment also provides a foundation for developing more advanced NLP-based and AI-powered conversational systems.
+
+---
+
+## FUTURE ENHANCEMENTS
+
+- Integrate Natural Language Processing (NLP) for better understanding of user queries.
+- Develop a graphical user interface using Tkinter or a web-based interface.
+- Connect the chatbot to a database for storing admission information.
+- Add multilingual support for regional languages.
+- Integrate an AI model to handle questions outside the predefined knowledge base.
+
+---
+
+## REFERENCES
+
+1. Python Documentation: https://docs.python.org/3/
+2. Python Regular Expressions: https://docs.python.org/3/library/re.html
+3. Python Random Module: https://docs.python.org/3/library/random.html
+
+---
+
+## SCREENSHOTS
+
+Create an `images` folder in your GitHub repository and add the screenshots of each experiment step.
+
+Suggested folder structure:
+
+```text
+EX-NO-8-College-Admission-Chatbot/
+│
+├── README.md
+│
+└── images/
+    ├── step1-import-libraries.png
+    ├── step2-knowledge-base.png
+    ├── step3-intent-matching.png
+    ├── step4-response-function.png
+    ├── step5-chat-loop.png
+    ├── step6-sample-testing.png
+    └── live-chat-output.png
+```

@@ -74,11 +74,6 @@ import random
 Required libraries imported successfully.
 ```
 
-**Screenshot:**
-
-![Import Libraries](images/step1-import-libraries.png)
-
----
 
 ### Step 2: Design the Knowledge Base (Intents and Responses)
 
@@ -203,11 +198,6 @@ knowledge_base = {
 | Contact | Phone, Email, Address | Contact information |
 | Goodbye | Bye, Exit, Quit | End the conversation |
 
-**Screenshot:**
-
-![Knowledge Base](images/step2-knowledge-base.png)
-
----
 
 ### Step 3: Function to Match User Input to an Intent
 
@@ -232,11 +222,6 @@ def match_intent(user_input):
     return None
 ```
 
-**Screenshot:**
-
-![Intent Matching](images/step3-intent-matching.png)
-
----
 
 ### Step 4: Define the Chatbot Response Function
 
@@ -259,12 +244,6 @@ def get_response(user_input):
 
     return "Sorry, I didn't understand that. Please ask about courses, fees, eligibility, or admissions."
 ```
-
-**Screenshot:**
-
-![Chatbot Response Function](images/step4-response-function.png)
-
----
 
 ### Step 5: Build the Interactive Conversation Loop
 
@@ -290,12 +269,6 @@ def chat():
         if match_intent(user_input) == "goodbye":
             break
 ```
-
-**Screenshot:**
-
-![Interactive Chat Loop](images/step5-chat-loop.png)
-
----
 
 ### Step 6: Test the Chatbot with Sample Queries
 
@@ -328,11 +301,6 @@ for query in sample_queries:
     print()
 ```
 
-**Screenshot:**
-
-![Sample Queries](images/step6-sample-testing.png)
-
----
 
 ### Step 7: Run the Complete Chatbot Program
 
@@ -593,24 +561,3 @@ The chatbot provides a basic virtual help-desk system for answering frequently a
 3. Python Random Module: https://docs.python.org/3/library/random.html
 
 ---
-
-## SCREENSHOTS
-
-Create an `images` folder in your GitHub repository and add the screenshots of each experiment step.
-
-Suggested folder structure:
-
-```text
-EX-NO-8-College-Admission-Chatbot/
-│
-├── README.md
-│
-└── images/
-    ├── step1-import-libraries.png
-    ├── step2-knowledge-base.png
-    ├── step3-intent-matching.png
-    ├── step4-response-function.png
-    ├── step5-chat-loop.png
-    ├── step6-sample-testing.png
-    └── live-chat-output.png
-```

@@ -516,14 +516,6 @@ Bot: Thank you for contacting the College Admission Help Desk. Goodbye!
 
 **Note:** Since the chatbot uses `random.choice()`, the exact response may vary between executions.
 
-### 3. Live Chat Screenshot
-
-Add your actual Python console screenshot here.
-
-![Live Chat Output](images/live-chat-output.png)
-
----
-
 ## RESULT
 
 A simple rule-based College Admission Chatbot was successfully designed, implemented, and tested using Python.
